@@ -10,7 +10,9 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+const screenSize = "1800x992"
 export default defineConfig({
+  snapshotPathTemplate: `{testDir}/__screenshots__/${screenSize}-{platform}-{projectName}/{testFileName}/{arg}{ext}`,
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,

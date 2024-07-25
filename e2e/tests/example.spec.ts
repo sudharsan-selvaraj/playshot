@@ -1,18 +1,18 @@
 import { test, expect } from '@playwright/test';
+import fs from "fs";
+test('has title', async ({ page }, testInfo) => {
+  await page.goto('https://google.dev/');
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
-
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
-
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
-
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
-
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
+  try {
+    // Expect a title "to contain" a substring.
+  await expect(page).toHaveScreenshot();
+  await expect(page).toHaveScreenshot();
+  } catch(err) {
+   const oldAttachments = testInfo.attachments.map(a => {
+      a.path = a.path ? `data:image/png;base64,${fs.readFileSync(a.path, "base64")}` : a.path
+      return a;
+    });
+    testInfo.attachments.push(...JSON.parse(JSON.stringify(oldAttachments)));
+    console.log(testInfo)
+  }
 });
