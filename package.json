@@ -10,7 +10,14 @@
   "author": "Sudharsan Selvaraj",
   "license": "ISC",
   "devDependencies": {
+    "@types/lodash": "^4.17.7",
     "@types/node": "^20.14.12",
     "typescript": "^5.5.4"
+  },
+  "peerDependencies": {
+     "@playwright/test": "^1.45.3"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }
