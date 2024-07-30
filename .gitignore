@@ -3,3 +3,5 @@ node_modules
 e2e/tests/__screenshots__
 playwright-report
 test-results
+e2e/.env
+e2e/test-output.txt

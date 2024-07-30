@@ -4,15 +4,18 @@
   "description": "Magic potion for playwright to support visual regression with cloud storage",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prettier": "prettier src/* --write"
   },
   "keywords": [],
   "author": "Sudharsan Selvaraj",
   "license": "ISC",
   "devDependencies": {
+    "@types/dotenv": "^8.2.0",
     "@types/lodash": "^4.17.7",
     "@types/node": "^20.14.12",
     "@types/ssh2-sftp-client": "^9.0.3",
+    "dotenv": "^16.4.5",
+    "prettier": "^3.3.3",
     "typescript": "^5.5.4"
   },
   "dependencies": {

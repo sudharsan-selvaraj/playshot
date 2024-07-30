@@ -1,13 +1,13 @@
 import {
   PageAssertionsToHaveScreenshotOptions,
   TestInfo,
-} from "@playwright/test";
-import path from "path";
+} from '@playwright/test';
+import path from 'path';
 import {
   sanitizeForFilePath,
   calculateSha1,
   addSuffixToFilePath,
-} from "playwright-core/lib/utils";
+} from 'playwright-core/lib/utils';
 
 function sanitizeFilePathBeforeExtension(filePath: string): string {
   const ext = path.extname(filePath);
@@ -15,7 +15,7 @@ function sanitizeFilePathBeforeExtension(filePath: string): string {
   return sanitizeForFilePath(base) + ext;
 }
 
-const snapshotNamesSymbol = Symbol("snapshotNames");
+const snapshotNamesSymbol = Symbol('snapshotNames');
 
 type SnapshotNames = {
   anonymousSnapshotIndex: number;
@@ -44,10 +44,10 @@ export class SnapshotHelper {
   constructor(
     testInfo: TestInfo,
     anonymousSnapshotExtension: string,
-    nameOrOptions: string | string[]
+    nameOrOptions: string | string[],
   ) {
     let name: string | string[];
-    if (Array.isArray(nameOrOptions) || typeof nameOrOptions === "string") {
+    if (Array.isArray(nameOrOptions) || typeof nameOrOptions === 'string') {
       name = nameOrOptions;
     }
 
@@ -72,19 +72,19 @@ export class SnapshotHelper {
       const fullTitleWithoutSpec = [
         ...testInfo.titlePath.slice(1),
         ++snapshotNames.anonymousSnapshotIndex,
-      ].join(" ");
+      ].join(' ');
       // Note: expected path must not ever change for backwards compatibility.
       expectedPathSegments = [
         sanitizeForFilePath(trimLongString(fullTitleWithoutSpec)) +
-          "." +
+          '.' +
           anonymousSnapshotExtension,
       ];
       // Trim the output file paths more aggressively to avoid hitting Windows filesystem limits.
       const sanitizedName =
         sanitizeForFilePath(
-          trimLongString(fullTitleWithoutSpec, windowsFilesystemFriendlyLength)
+          trimLongString(fullTitleWithoutSpec, windowsFilesystemFriendlyLength),
         ) +
-        "." +
+        '.' +
         anonymousSnapshotExtension;
       outputBasePath = (testInfo as any)._getOutputPath(sanitizedName);
       this.attachmentBaseName = sanitizedName;
@@ -98,7 +98,7 @@ export class SnapshotHelper {
       const joinedName = Array.isArray(name)
         ? name.join(path.sep)
         : sanitizeFilePathBeforeExtension(
-            trimLongString(name, windowsFilesystemFriendlyLength)
+            trimLongString(name, windowsFilesystemFriendlyLength),
           );
       snapshotNames.namedSnapshotIndex[joinedName] =
         (snapshotNames.namedSnapshotIndex[joinedName] || 0) + 1;

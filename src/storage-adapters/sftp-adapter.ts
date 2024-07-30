@@ -1,7 +1,7 @@
-import Sftp, { ConnectOptions } from "ssh2-sftp-client";
-import path from "path";
-import { RemoteFileNotFoundException } from "../errors";
-import fs from "fs";
+import Sftp, { ConnectOptions } from 'ssh2-sftp-client';
+import path from 'path';
+import { RemoteFileNotFoundException } from '../errors';
+import fs from 'fs';
 
 export type SftpAdapterOptions = ConnectOptions & {
   remoteDirectory: string;
@@ -30,13 +30,13 @@ export class SftpAdapter implements StorageAdapter {
 
   async fetchScreenShot(
     filepathOnDisk: string,
-    basePath: string
+    basePath: string,
   ): Promise<string> {
     const remoteFilePath = this.getRemoteFilePath(filepathOnDisk, basePath);
     try {
       fs.mkdirSync(path.dirname(filepathOnDisk), { recursive: true });
       await this.sftpClient.get(remoteFilePath, filepathOnDisk);
-      return "";
+      return '';
     } catch (err) {
       fs.unlinkSync(filepathOnDisk);
       throw new RemoteFileNotFoundException(err);
@@ -45,7 +45,7 @@ export class SftpAdapter implements StorageAdapter {
 
   async saveScreenShot(
     filepathOnDisk: string,
-    basePath: string
+    basePath: string,
   ): Promise<void> {
     const remoteFilePath = this.getRemoteFilePath(filepathOnDisk, basePath);
     await this.sftpClient.mkdir(path.dirname(remoteFilePath), true);
