@@ -1,5 +1,5 @@
 import { test as BaseTest, expect } from '@playwright/test';
-import { PlayShot, VisualMatcher } from '../src';
+import { PlayShot, PlayShotMatcher } from '../src';
 import dotenv from 'dotenv';
 import path from 'path';
 import { s3Adapter } from './setup';
@@ -11,8 +11,8 @@ const playshot = new PlayShot({
   remotePathDelimiter: '__screenshots__',
 });
 
-const test = BaseTest.extend<{ visualMatcher: VisualMatcher }>({
-  visualMatcher: async ({ page }, use, testInfo) => {
+const test = BaseTest.extend<{ playShot: PlayShotMatcher }>({
+  playShot: async ({ page }, use, testInfo) => {
     await use(playshot.createMatcher(page, testInfo));
   },
 });

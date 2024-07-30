@@ -12,8 +12,8 @@ import { PlayShotOptions, ScreenshotAssertionOption } from './types';
  */
 const IMAGE_PATH_REGEX = /at\s(.*\.(png|jpg|jpeg|gif|bmp|svg))/;
 
-export class VisualMatcher {
-  private softExpect: VisualMatcher;
+export class PlayShotMatcher {
+  private softExpect: PlayShotMatcher;
   private imageList = new Set<string>();
 
   constructor(
@@ -26,7 +26,7 @@ export class VisualMatcher {
 
   public get soft() {
     if (!this.softExpect) {
-      this.softExpect = new VisualMatcher(
+      this.softExpect = new PlayShotMatcher(
         this.page,
         this.testInfo,
         this.matchOption,

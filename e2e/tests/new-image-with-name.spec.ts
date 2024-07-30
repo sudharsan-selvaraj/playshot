@@ -6,7 +6,7 @@ import path from 'path';
 
 test('test new image is uploaded to s3 if not present with default name', async ({
   page,
-  visualMatcher,
+  playShot,
 }, testInfo) => {
   test.setTimeout(0);
   const fileName = getTestFileName(testInfo);
@@ -20,7 +20,7 @@ test('test new image is uploaded to s3 if not present with default name', async 
   expect(
     fs.existsSync(path.join(SCREEN_SHOT_DIRECTORY, fileName, 'table.png')),
   ).toEqual(false);
-  await visualMatcher.soft.assertElement(page.locator('table'), 'table.png');
+  await playShot.soft.assertElement(page.locator('table'), 'table.png');
   files = await getFilesFromBucket(fileName);
   expect(files.Contents.length).toEqual(1);
   expect(files.Contents[0].Key).toEqual(`${fileName}/table.png`);
@@ -33,7 +33,7 @@ test('test new image is uploaded to s3 if not present with default name', async 
       path.join(SCREEN_SHOT_DIRECTORY, fileName, 'sub-folder', 'canvas.png'),
     ),
   ).toEqual(false);
-  await visualMatcher.soft.assertElement(page.locator('#canvas'), [
+  await playShot.soft.assertElement(page.locator('#canvas'), [
     'sub-folder',
     'canvas.png',
   ]);

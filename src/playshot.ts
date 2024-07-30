@@ -1,7 +1,7 @@
 import type { Page, TestInfo } from '@playwright/test';
 import _ from 'lodash';
 import { PlayShotOptions } from './types';
-import { VisualMatcher } from './matcher';
+import { PlayShotMatcher } from './matcher';
 import { expect } from '@playwright/test';
 
 class PlayShot {
@@ -12,7 +12,7 @@ class PlayShot {
   }
 
   createMatcher(page: Page, testInfo: TestInfo) {
-    return new VisualMatcher(page, testInfo, this.options, expect);
+    return new PlayShotMatcher(page, testInfo, this.options, expect);
   }
 }
 

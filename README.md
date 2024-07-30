@@ -88,13 +88,13 @@ const playshot = new PlayShot({
 });
 
 test('snapshot test', async ({ page }, testInfo) => {
-  const visualMatcher = playshot.createMatcher(page, testInfo);
+  const playShot = playshot.createMatcher(page, testInfo);
 
   await page.goto('https://www.google.com');
-  await visualMatcher.assertPage();
+  await playShot.assertPage();
   // or
-  await visualMatcher.assertElement(page.locator('table')); // asserts a specific web element
-  await visualMatcher.assertPage({
+  await playShot.assertElement(page.locator('table')); // asserts a specific web element
+  await playShot.assertPage({
     fullScreen: true, // asserts the full page
   });
 });
@@ -118,10 +118,9 @@ const playshot = new PlayShot({
 });
 
 const test =
-  BaseTest.extend <
-  { visualMatcher: VisualMatcher } >
+  BaseTest.extend <{ playShot: PlayShotMatcher }>
   {
-    visualMatcher: async ({ page }, use, testInfo) => {
+    playShot: async ({ page }, use, testInfo) => {
       await use(playshot.createMatcher(page, testInfo));
     },
   };
@@ -134,11 +133,11 @@ export default test;
 ```javascript
 import test from './extended-test';
 
-test('snapshot test', async ({ page, visualMatcher }) => {
+test('snapshot test', async ({ page, playShot }) => {
   await page.goto('https://www.google.com');
-  await visualMatcher.assertPage();
-  await visualMatcher.assertElement(page.locator('table')); // asserts a specific web element
-  await visualMatcher.assertPage({
+  await playShot.assertPage();
+  await playShot.assertElement(page.locator('table')); // asserts a specific web element
+  await playShot.assertPage({
     fullScreen: true, // asserts the full page
   });
 });
@@ -156,7 +155,7 @@ test('snapshot test', async ({ page, visualMatcher }) => {
 - **Screenshot Update**: Users can individually update screenshots when the UI changes.
 
 ```javascript
-await visualMatcher.assertPage({
+await playShot.assertPage({
   update: true,
 });
 ```
@@ -166,21 +165,21 @@ This will replace the existing image in remote server with the latest screenshot
 - **Flexible Validation**: Methods for validating visual regression for both pages and individual web elements:
 
 ```javascript
-await visualMatcher.assertElement(locator);
-await visualMatcher.assertPage();
-await visualMatcher.assertPage({ fullScreen: true });
-await visualMatcher.assertPage('login-page.png');
-await visualMatcher.assertPage(['nested-folder', 'login-page.png']);
+await playShot.assertElement(locator);
+await playShot.assertPage();
+await playShot.assertPage({ fullScreen: true });
+await playShot.assertPage('login-page.png');
+await playShot.assertPage(['nested-folder', 'login-page.png']);
 ```
 
 - **Support for Soft Assertions**: The library includes built-in support for soft assertions, which means that test failures will not halt the execution of subsequent test steps. The test will continue to run even if a soft assertion fails.
 
 ```javascript
-await visualMatcher.soft.assertElement(locator);
-await visualMatcher.soft.assertPage();
-await visualMatcher.soft.assertPage({ fullScreen: true });
-await visualMatcher.soft.assertPage('login-page.png');
-await visualMatcher.soft.assertPage(['nested-folder', 'login-page.png']);
+await playShot.soft.assertElement(locator);
+await playShot.soft.assertPage();
+await playShot.soft.assertPage({ fullScreen: true });
+await playShot.soft.assertPage('login-page.png');
+await playShot.soft.assertPage(['nested-folder', 'login-page.png']);
 ```
 
 ## License

@@ -35,19 +35,19 @@ test.beforeAll(async ({}, testInfo) => {
 
 test('test existing image s3 with name', async ({
   page,
-  visualMatcher,
+  playShot,
 }, testInfo) => {
   test.setTimeout(0);
   const fileName = getTestFileName(testInfo);
   await page.goto('https://the-internet.herokuapp.com/challenging_dom');
   await page.waitForSelector('table');
-  await visualMatcher.soft.assertElement(page.locator('table'), 'table.png');
+  await playShot.soft.assertElement(page.locator('table'), 'table.png');
   expect(
     fs.existsSync(path.join(SCREEN_SHOT_DIRECTORY, fileName, 'table.png')),
   );
 
   await page.goto('https://the-internet.herokuapp.com/forgot_password');
-  await visualMatcher.soft.assertPage(['page', 'page.png']);
+  await playShot.soft.assertPage(['page', 'page.png']);
   expect(
     fs.existsSync(
       path.join(SCREEN_SHOT_DIRECTORY, fileName, 'page', 'page.png'),
@@ -57,13 +57,13 @@ test('test existing image s3 with name', async ({
 
 test('test existing image s3 without name', async ({
   page,
-  visualMatcher,
+  playShot,
 }, testInfo) => {
   test.setTimeout(0);
   const fileName = getTestFileName(testInfo);
   await page.goto('https://the-internet.herokuapp.com/challenging_dom');
   await page.waitForSelector('table');
-  await visualMatcher.soft.assertElement(page.locator('table'));
+  await playShot.soft.assertElement(page.locator('table'));
   expect(
     fs.existsSync(
       path.join(
@@ -75,7 +75,7 @@ test('test existing image s3 without name', async ({
   );
 
   await page.goto('https://the-internet.herokuapp.com/forgot_password');
-  await visualMatcher.soft.assertPage();
+  await playShot.soft.assertPage();
   expect(
     fs.existsSync(
       path.join(
