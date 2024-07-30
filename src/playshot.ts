@@ -1,10 +1,11 @@
 import type { Page, TestInfo } from '@playwright/test';
 import _ from 'lodash';
-import { CloudVisualRegressionOptions } from './types';
+import { PlayShotOptions } from './types';
 import { VisualMatcher } from './matcher';
 import { expect } from '@playwright/test';
-class PlaywrighCloudVisualRegression {
-  constructor(private readonly options: CloudVisualRegressionOptions) {}
+
+class PlayShot {
+  constructor(private readonly options: PlayShotOptions) {}
 
   async verifyConnection() {
     return this.options.adapter.verifyConnection();
@@ -15,4 +16,4 @@ class PlaywrighCloudVisualRegression {
   }
 }
 
-export { PlaywrighCloudVisualRegression };
+export { PlayShot };

@@ -1,0 +1,112 @@
+
+Running 4 tests using 4 workers
+
+[1A[2K[1/4] [chromium] › new-image-with-name.spec.ts:7:5 › test new image is uploaded to s3 if not present with default name
+[1A[2K[2/4] [chromium] › new-image-without-name.spec.ts:5:5 › test new image is uploaded to s3 if not present without default name
+[1A[2K[3/4] [chromium] › existing-image.spec.ts:36:5 › test existing image s3 with name
+[1A[2K[4/4] [chromium] › existing-image.spec.ts:58:5 › test existing image s3 without name
+[1A[2K[chromium] › new-image-without-name.spec.ts:5:5 › test new image is uploaded to s3 if not present without default name
+Remote file not exits in path : /new-image-without-name.spec.ts/test-new-image-is-uploaded-to-s3-if-not-present-without-default-name-1.png
+
+[1A[2KRemote file not exits in path : /new-image-without-name.spec.ts/test-new-image-is-uploaded-to-s3-if-not-present-without-default-name-2.png
+
+[1A[2K[chromium] › new-image-with-name.spec.ts:7:5 › test new image is uploaded to s3 if not present with default name
+Remote file not exits in path : /new-image-with-name.spec.ts/table.png
+
+[1A[2K  1) [chromium] › new-image-without-name.spec.ts:5:5 › test new image is uploaded to s3 if not present without default name 
+
+    Error: A snapshot doesn't exist at /Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/e2e/tests/__screenshots__/new-image-without-name.spec.ts/test-new-image-is-uploaded-to-s3-if-not-present-without-default-name-1.png, writing actual.
+
+       at ../../src/matcher.ts:152
+
+      150 |     }
+      151 |
+    > 152 |     await expectMethod(this.page).toHaveScreenshot(name || '', options);
+          |     ^
+      153 |     const filesToUpload = this.testInfo.errors
+      154 |       .map((e) => e.message?.toLocaleLowerCase())
+      155 |       .filter((message) => message.includes("snapshot doesn't exist"))
+
+        at VisualMatcher.toHaveScreenShot (/Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/src/matcher.ts:152:5)
+        at VisualMatcher.assertElement (/Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/src/matcher.ts:106:5)
+        at /Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/e2e/tests/new-image-without-name.spec.ts:19:3
+
+    Error: A snapshot doesn't exist at /Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/e2e/tests/__screenshots__/new-image-without-name.spec.ts/test-new-image-is-uploaded-to-s3-if-not-present-without-default-name-2.png, writing actual.
+
+       at ../../src/matcher.ts:152
+
+      150 |     }
+      151 |
+    > 152 |     await expectMethod(this.page).toHaveScreenshot(name || '', options);
+          |     ^
+      153 |     const filesToUpload = this.testInfo.errors
+      154 |       .map((e) => e.message?.toLocaleLowerCase())
+      155 |       .filter((message) => message.includes("snapshot doesn't exist"))
+
+        at VisualMatcher.toHaveScreenShot (/Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/src/matcher.ts:152:5)
+        at VisualMatcher.assertElement (/Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/src/matcher.ts:106:5)
+        at /Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/e2e/tests/new-image-without-name.spec.ts:24:3
+
+    attachment #1: test-new-image-is-uploaded-06329-sent-without-default-name-1-actual.png (image/png) 
+    ../test-results/new-image-without-name-tes-39532-resent-without-default-name-chromium/test-new-image-is-uploaded-06329-sent-without-default-name-1-actual.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: test-new-image-is-uploaded-c3192-sent-without-default-name-2-actual.png (image/png) 
+    ../test-results/new-image-without-name-tes-39532-resent-without-default-name-chromium/test-new-image-is-uploaded-c3192-sent-without-default-name-2-actual.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2KRemote file not exits in path : /new-image-with-name.spec.ts/sub-folder/canvas.png
+
+[1A[2K  2) [chromium] › new-image-with-name.spec.ts:7:5 › test new image is uploaded to s3 if not present with default name 
+
+    Error: A snapshot doesn't exist at /Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/e2e/tests/__screenshots__/new-image-with-name.spec.ts/table.png, writing actual.
+
+       at ../../src/matcher.ts:152
+
+      150 |     }
+      151 |
+    > 152 |     await expectMethod(this.page).toHaveScreenshot(name || '', options);
+          |     ^
+      153 |     const filesToUpload = this.testInfo.errors
+      154 |       .map((e) => e.message?.toLocaleLowerCase())
+      155 |       .filter((message) => message.includes("snapshot doesn't exist"))
+
+        at VisualMatcher.toHaveScreenShot (/Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/src/matcher.ts:152:5)
+        at VisualMatcher.assertElement (/Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/src/matcher.ts:106:5)
+        at /Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/e2e/tests/new-image-with-name.spec.ts:23:3
+
+    Error: A snapshot doesn't exist at /Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/e2e/tests/__screenshots__/new-image-with-name.spec.ts/sub-folder/canvas.png, writing actual.
+
+       at ../../src/matcher.ts:152
+
+      150 |     }
+      151 |
+    > 152 |     await expectMethod(this.page).toHaveScreenshot(name || '', options);
+          |     ^
+      153 |     const filesToUpload = this.testInfo.errors
+      154 |       .map((e) => e.message?.toLocaleLowerCase())
+      155 |       .filter((message) => message.includes("snapshot doesn't exist"))
+
+        at VisualMatcher.toHaveScreenShot (/Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/src/matcher.ts:152:5)
+        at VisualMatcher.assertElement (/Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/src/matcher.ts:106:5)
+        at /Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/e2e/tests/new-image-with-name.spec.ts:36:3
+
+    attachment #1: table-actual.png (image/png) ────────────────────────────────────────────────────
+    ../test-results/new-image-with-name-test-n-0b065-t-present-with-default-name-chromium/table-actual.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: sub-folder/canvas-actual.png (image/png) ────────────────────────────────────────
+    ../test-results/new-image-with-name-test-n-0b065-t-present-with-default-name-chromium/sub-folder-canvas-actual.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[1A[2K  2 failed
+    [chromium] › new-image-with-name.spec.ts:7:5 › test new image is uploaded to s3 if not present with default name 
+    [chromium] › new-image-without-name.spec.ts:5:5 › test new image is uploaded to s3 if not present without default name 
+  2 passed (8.9s)
+
+To open last HTML report run:
+
+  npx playwright show-report
+

@@ -1,27 +1,28 @@
-# `playwright-cloud-visuals`
+# `playshot`
 
-`playwright-cloud-visuals` is a library designed to enhance the visual regression testing capabilities of Playwright. Unlike Playwright's built-in functionality, which stores screenshots locally, this library allows you to store screenshots on remote servers like Amazon S3 or SFTP servers, eliminating the need to manage screenshots in your local file system.
+`playshot` is a library designed to enhance the visual regression testing capabilities of Playwright. Unlike Playwright's built-in functionality, which stores screenshots locally, this library allows you to store screenshots on remote servers like Amazon S3 or SFTP servers, eliminating the need to manage screenshots in your local file system.
 
 ## Installation
 
-You can install `playwright-cloud-visuals` via npm:
+You can install `playshot` via npm:
 
 ```bash
-npm install playwright-cloud-visuals --save
+npm install playshot --save
 ```
 
 ## Basic Usage
 
-Create an instance of `PlaywrightCloudVisualRegression`:
+Create an instance of `PlayShot`:
 
 ```javascript
-const cloudVisuals = new PlaywrightCloudVisualRegression({
+const playshot = new PlayShot({
   adapter: s3Adapter, // or sshAdapter for SFTP
   remotePathDelimiter: '__screenshots__',
 });
 ```
 
-`remotePathDelimiter` is required to split the local file path to map it to s3 path.
+The `remotePathDelimiter` is a required parameter that specifies how to divide the local file path to correspond with the storage path on S3 or on remote sftp server.
+
 For example if the `snapshotPathTemplate` path in config file is
 
 ```javascript
@@ -36,7 +37,7 @@ and if `remotePathDelimiter` is `__screenshots__`, the screenshots will be store
 Example:
 
 1. Local file path: `/Users/user/tests/__screenshots__/test.spect.ts/test-existing-image-s3-without-name-1.png`
-2. S3 Key for the same screenshot would be `test.spect.ts/test-existing-image-s3-without-name-1.png`
+2. The corresponding S3 key for this screenshot would be `test.spect.ts/test-existing-image-s3-without-name-1.png` under the `bucket` configured in the adapter.
 
 ## Setting up adapters:
 
@@ -50,7 +51,7 @@ const s3Adapter = new AmazonS3Adapter(new S3Client({
   },
   region: process.env.S3_REGION,
 } as any), {
-  bucket: process.env.S3_BUCKET, // bucket where the image to be stored
+  bucket: process.env.S3_BUCKET, // bucket where the images are to be stored
 });
 ```
 
@@ -71,15 +72,15 @@ const sftpAdapter = new SftpAdapter({
 
 ```javascript
 import { test, expect } from '@playwright/test';
-import { PlaywrightCloudVisualRegression } from 'playwright-cloud-visuals';
+import { PlayShot } from 'playshot';
 
-const cloudVisuals = new PlaywrightCloudVisualRegression({
+const playshot = new PlayShot({
   adapter: s3Adapter, // or sshAdapter for SFTP
   remotePathDelimiter: '__screenshots__',
 });
 
 test('snapshot test', async ({ page }, testInfo) => {
-  const visualMatcher = cloudVisuals.createMatcher(page, testInfo);
+  const visualMatcher = playshot.createMatcher(page, testInfo);
 
   await page.goto('https://www.google.com');
   await visualMatcher.assertPage();
@@ -91,19 +92,19 @@ test('snapshot test', async ({ page }, testInfo) => {
 });
 ```
 
-Both will support all options supported by native `toHaveScreenshot` matcher provided by playwright.
+Both `assertElement` and `assertPage` methods support all the options available in the native `toHaveScreenshot` matcher provided by Playwright.
 
 ## Configuting matcher via fixtures:
 
-The easiest way to configure the matchers is by using playwright test fixtures
+The simplest way to configure the matchers is by using Playwright test fixtures.
 
 ### extended-test.ts
 
 ```javascript
 import { test as BaseTest, expect } from '@playwright/test';
-import { PlaywrightCloudVisualRegression } from 'playwright-cloud-visuals';
+import { PlayShot } from 'playwright-cloud-visuals';
 
-const cloudVisuals = new PlaywrightCloudVisualRegression({
+const playshot = new PlayShot({
   adapter: s3Adapter, // or sshAdapter for SFTP
   remotePathDelimiter: '__screenshots__',
 });
@@ -113,7 +114,7 @@ const test =
   { visualMatcher: VisualMatcher } >
   {
     visualMatcher: async ({ page }, use, testInfo) => {
-      await use(cloudVisuals.createMatcher(page, testInfo));
+      await use(playshot.createMatcher(page, testInfo));
     },
   };
 
@@ -135,6 +136,12 @@ test('snapshot test', async ({ page, visualMatcher }) => {
 });
 ```
 
+## How It Works
+
+1. When the assertion method is invoked via `assertElement` or `assertPage`, the plugin constructs the expected image path internally and checks if the image already exists on the remote server. If the image is found, it is downloaded and placed in the directory where Playwright looks for baseline screenshots.
+2. If the tests are run for the first time and no baseline images are available, the plugin automatically identifies this and uploads the screenshot captured by Playwright to the remote server.
+3. If the user explicitly wants to update an image, the plugin will replace the existing image with the newly captured screenshot.
+
 ## Advanced Features
 
 - **Automatic Screenshot Upload**: Missing screenshots are automatically pushed to the remote server based on test failures. You dont need to save the screenshots to the version control.
@@ -150,9 +157,23 @@ This will replace the existing image in remote server with the latest screenshot
 
 - **Flexible Validation**: Methods for validating visual regression for both pages and individual web elements:
 
-  - `await visualMatcher.assertElement(locator);`
-  - `await visualMatcher.assertPage();`
-  - `await visualMatcher.assertPage({ fullScreen: true })`
+```javascript
+await visualMatcher.assertElement(locator);
+await visualMatcher.assertPage();
+await visualMatcher.assertPage({ fullScreen: true });
+await visualMatcher.assertPage('login-page.png');
+await visualMatcher.assertPage(['nested-folder', 'login-page.png']);
+```
+
+- **Support for Soft Assertions**: The library includes built-in support for soft assertions, which means that test failures will not halt the execution of subsequent test steps. The test will continue to run even if a soft assertion fails.
+
+```javascript
+await visualMatcher.soft.assertElement(locator);
+await visualMatcher.soft.assertPage();
+await visualMatcher.soft.assertPage({ fullScreen: true });
+await visualMatcher.soft.assertPage('login-page.png');
+await visualMatcher.soft.assertPage(['nested-folder', 'login-page.png']);
+```
 
 ## License
 

@@ -1,6 +1,6 @@
 import { PageAssertionsToHaveScreenshotOptions } from '@playwright/test';
 
-export type CloudVisualRegressionOptions = {
+export type PlayShotOptions = {
   adapter: StorageAdapter;
   remotePathDelimiter: string;
 };

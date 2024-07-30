@@ -10,7 +10,6 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-const screenSize = '1800x992';
 export default defineConfig({
   globalSetup: require.resolve('./setup'),
   snapshotPathTemplate: `{testDir}/__screenshots__/{testFileName}/{arg}{ext}`,

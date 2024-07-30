@@ -5,10 +5,7 @@ import { SnapshotHelper } from './snapshot-helper';
 import fs from 'fs';
 import path from 'path';
 import { RemoteFileNotFoundException } from './errors';
-import {
-  CloudVisualRegressionOptions,
-  ScreenshotAssertionOption,
-} from './types';
+import { PlayShotOptions, ScreenshotAssertionOption } from './types';
 
 /*
  * Sample error message
@@ -23,7 +20,7 @@ export class VisualMatcher {
   constructor(
     private readonly page: Page,
     private readonly testInfo: TestInfo,
-    private readonly matchOption: CloudVisualRegressionOptions,
+    private readonly matchOption: PlayShotOptions,
     private readonly expect: Expect,
     private readonly isSoftAssert: boolean = false,
   ) {}

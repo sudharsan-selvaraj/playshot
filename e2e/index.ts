@@ -1,19 +1,19 @@
 import { test as BaseTest, expect } from '@playwright/test';
-import { PlaywrighCloudVisualRegression, VisualMatcher } from '../src';
+import { PlayShot, VisualMatcher } from '../src';
 import dotenv from 'dotenv';
 import path from 'path';
 import { s3Adapter } from './setup';
 
 dotenv.config();
 
-const cloudVisuals = new PlaywrighCloudVisualRegression({
+const playshot = new PlayShot({
   adapter: s3Adapter,
   remotePathDelimiter: '__screenshots__',
 });
 
 const test = BaseTest.extend<{ visualMatcher: VisualMatcher }>({
   visualMatcher: async ({ page }, use, testInfo) => {
-    await use(cloudVisuals.createMatcher(page, testInfo));
+    await use(playshot.createMatcher(page, testInfo));
   },
 });
 

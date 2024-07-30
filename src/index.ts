@@ -1,2 +1,2 @@
-export * from './cloud-regression';
+export * from './playshot';
 export * from './matcher';
