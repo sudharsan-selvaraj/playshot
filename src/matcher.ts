@@ -1,5 +1,4 @@
 import type { Page, TestInfo, Locator, Expect } from '@playwright/test';
-import { expect } from '@playwright/test';
 import _ from 'lodash';
 import { SnapshotHelper } from './snapshot-helper';
 import fs from 'fs';
@@ -148,8 +147,14 @@ export class VisualMatcher {
     if (fs.existsSync(helper.expectedPath) && options.update) {
       fs.unlinkSync(helper.expectedPath);
     }
+    try {
+      await expectMethod(this.page).toHaveScreenshot(name || '', options);
+    } catch (err) {
+      throw err;
+    } finally {
+      this.attachFailureScreenshotToReport();
+    }
 
-    await expectMethod(this.page).toHaveScreenshot(name || '', options);
     const filesToUpload = this.testInfo.errors
       .map((e) => e.message?.toLocaleLowerCase())
       .filter((message) => message.includes("snapshot doesn't exist"))
@@ -163,5 +168,19 @@ export class VisualMatcher {
         adapter.saveScreenShot(f, this.matchOption.remotePathDelimiter),
       ),
     );
+  }
+
+  private async attachFailureScreenshotToReport() {
+    if (this.matchOption.attachImagesToReport) {
+      const oldAttachments = this.testInfo.attachments.map((a) => {
+        a.path = a.path
+          ? `data:image/png;base64,${fs.readFileSync(a.path, 'base64')}`
+          : a.path;
+        return a;
+      });
+      this.testInfo.attachments.push(
+        ...JSON.parse(JSON.stringify(oldAttachments)),
+      );
+    }
   }
 }

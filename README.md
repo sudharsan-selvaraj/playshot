@@ -39,6 +39,14 @@ Example:
 1. Local file path: `/Users/user/tests/__screenshots__/test.spect.ts/test-existing-image-s3-without-name-1.png`
 2. The corresponding S3 key for this screenshot would be `test.spect.ts/test-existing-image-s3-without-name-1.png` under the `bucket` configured in the adapter.
 
+## Options:
+
+| Name                 | type           | Required | Description                                                                                                                                                                                                                                                                                                       |   |
+|----------------------|----------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---|
+| adapter              | StorageAdapter | Yes      | Adpater that handles the storage and retrieval of images from remote server eg: AmazonS3Adapter, SftpAdapter                                                                                                                                                                                                      |   |
+| remotePathDelimiter  | String         | Yes      | Specifies how to divide the local file path to correspond with the storage path on S3 or on remote sftp server.                                                                                                                                                                                                   |   |
+| attachImagesToReport | Boolean        | No       | When enabled, if screenshot matching fails, the plugin attaches the actual, expected, and difference images to the HTML report in base64 format. This feature is particularly useful when running tests in CI environments. <br>  **Note:** Enabling this feature will increase the file size of the HTML report. |   |
+
 ## Setting up adapters:
 
 ### Amazon S3 Adapter:
