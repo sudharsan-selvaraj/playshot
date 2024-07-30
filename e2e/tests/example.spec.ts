@@ -1,22 +1,42 @@
 import { test } from "@playwright/test";
 import { PlaywrighCloudVisualRegression, VisualExpect } from "../../src/index";
+import { AmazonS3Adapter } from "../../src/storage-adapters/amazon-s3-adapter";
+import { S3Client } from "@aws-sdk/client-s3";
 
 const extendedTest = test.extend<{
-  visualExpect: VisualExpect;
+  visualAssert: VisualExpect;
 }>({
-  visualExpect: async ({ page }, use, testInfo) => {
+  visualAssert: async ({ page }, use, testInfo) => {
     const regression = new PlaywrighCloudVisualRegression({
       screenShotsBasePath: "__screenshots__",
+      adapter: new AmazonS3Adapter(
+        new S3Client({
+          forcePathStyle: true,
+          endpoint: "http://localhost:9100/",
+          credentials: {
+            accessKeyId: "",
+            secretAccessKey: "",
+          },
+          region: "us-east-1",
+        } as any),
+        {
+          bucket: "visual-regression",
+        }
+      ),
     });
-    await use(regression.createMatcher(page, testInfo));
+    const matcher = regression.createMatcher(page, testInfo);
+    await use(matcher);
+    // await matcher.cleanUp();
   },
 });
 
-extendedTest("has title", async ({ page, visualExpect }) => {
+extendedTest("has title", async ({ page, visualAssert }) => {
   test.setTimeout(0);
-  await page.goto("https://www.google.com/search?q=demo2");
+  await page.goto("https://www.google.com/search?q=demo5");
   const search = page.locator("[jsname='RNNXgb']");
 
-  await visualExpect.soft.assertElement(search, ["element", "search.png"]);
-  await visualExpect.soft.assertPage(["page", "full-page.png"]);
+  await visualAssert.soft.assertElement(search, ["element", "search.png"]);
+
+  await page.goto("https://www.github.com");
+  await visualAssert.assertPage(["page", "full-page-github.png"]);
 });

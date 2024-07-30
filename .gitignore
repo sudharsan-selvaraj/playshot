@@ -1,2 +1,5 @@
 .history
 node_modules
+e2e/tests/__screenshots__
+playwright-report
+test-results

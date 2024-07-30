@@ -7,6 +7,9 @@ import type {
 import { expect } from "@playwright/test";
 import _ from "lodash";
 import { SnapshotHelper } from "./SanpshotHelper";
+import fs from "fs";
+import path from "path";
+import { RemoteFileNotFoundException } from "./errors";
 
 type CloudVisualRegressionOptions = {
   adapter?: StorageAdapter;
@@ -14,11 +17,19 @@ type CloudVisualRegressionOptions = {
 };
 
 type ScreenshotAssertionOption = PageAssertionsToHaveScreenshotOptions & {
-  element?: Locator;
+  update?: boolean;
 };
+
+/*
+ * Sample error message
+ * Error: A snapshot doesn't exist at /Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/e2e/tests/__screenshots__/1800x992 darwin chromium/example.spec.ts/element/search.png, writing actual
+ */
+const IMAGE_PATH_REGEX = /at\s(.*\.(png|jpg|jpeg|gif|bmp|svg))/;
 
 class VisualExpect {
   private softExpect: VisualExpect;
+  private imageList = new Set<string>();
+
   constructor(
     private readonly page: Page,
     private readonly testInfo: TestInfo,
@@ -59,22 +70,22 @@ class VisualExpect {
 
     return {
       name: (name || "") as string,
-      options: opts,
+      options: opts || {},
     };
   }
 
   async assertPage(): Promise<void>;
   async assertPage(
     name: string | string[],
-    options?: PageAssertionsToHaveScreenshotOptions
+    options?: ScreenshotAssertionOption
   ): Promise<void>;
   async assertPage(
     name: string | string[],
-    options: PageAssertionsToHaveScreenshotOptions
+    options: ScreenshotAssertionOption
   ): Promise<void>;
   async assertPage(
     nameOrOptions?: string | string[],
-    options?: PageAssertionsToHaveScreenshotOptions
+    options?: ScreenshotAssertionOption
   ): Promise<void> {
     const { name, options: opts } = this.getAsserionOptions(
       nameOrOptions as string,
@@ -87,17 +98,17 @@ class VisualExpect {
   async assertElement(element: Locator, name: string | string[]): Promise<void>;
   async assertElement(
     element: Locator,
-    options: PageAssertionsToHaveScreenshotOptions
+    options: ScreenshotAssertionOption
   ): Promise<void>;
   async assertElement(
     element: Locator,
     name: string | string[],
-    options: PageAssertionsToHaveScreenshotOptions
+    options: ScreenshotAssertionOption
   ): Promise<void>;
   async assertElement(
     element: Locator,
-    nameOrOptions?: string | string[] | PageAssertionsToHaveScreenshotOptions,
-    options?: PageAssertionsToHaveScreenshotOptions
+    nameOrOptions?: string | string[] | ScreenshotAssertionOption,
+    options?: ScreenshotAssertionOption
   ) {
     const { name, options: opts } = this.getAsserionOptions(
       nameOrOptions as string,
@@ -109,6 +120,11 @@ class VisualExpect {
     });
   }
 
+  cleanUp() {
+    this.imageList.forEach((image) => fs.unlinkSync(image));
+    this.softExpect?.cleanUp();
+  }
+
   private async toHaveScreenShot(
     name: string | string[],
     options: ScreenshotAssertionOption
@@ -117,8 +133,51 @@ class VisualExpect {
     const helper = new SnapshotHelper(this.testInfo, "png", name);
     const expectMethod = this.isSoftAssert ? expect.soft : expect;
 
-    console.log(helper.expectedPath);
+    if (
+      helper.expectedPath &&
+      !fs.existsSync(helper.expectedPath) &&
+      !options.update
+    ) {
+      try {
+        const base64 = await adapter.fetchScreenShot(
+          helper.expectedPath,
+          this.matchOption.screenShotsBasePath
+        );
+        fs.mkdirSync(path.dirname(helper.expectedPath), { recursive: true });
+        fs.writeFileSync(helper.expectedPath, base64, "base64");
+      } catch (err) {
+        if (err instanceof RemoteFileNotFoundException) {
+          console.log(err.message);
+        } else {
+          throw err;
+        }
+      }
+    }
+
+    if (fs.existsSync(helper.expectedPath) && options.update) {
+      fs.unlinkSync(helper.expectedPath);
+    }
+
     await expectMethod(this.page).toHaveScreenshot(name || "", options);
+    const filesToUpload = this.testInfo.errors
+      .filter((e) =>
+        e.message?.toLocaleLowerCase().includes("snapshot doesn't exist")
+      )
+      .map((e) => e.message?.toLocaleLowerCase().match(IMAGE_PATH_REGEX)[1])
+      .filter(Boolean)
+      .filter((f) => fs.existsSync(f));
+
+    filesToUpload.forEach((f) => this.imageList.add(f));
+
+    await Promise.all(
+      filesToUpload.map((f) =>
+        adapter.saveScreenShot(
+          fs.readFileSync(f, { encoding: "base64" }),
+          f,
+          this.matchOption.screenShotsBasePath
+        )
+      )
+    );
   }
 }
 
