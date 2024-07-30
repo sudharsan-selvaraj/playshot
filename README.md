@@ -12,7 +12,7 @@ npm install playwright-cloud-visuals --save
 
 ## Basic Usage
 
-**Create an instance of `PlaywrightCloudVisualRegression`:**
+Create an instance of `PlaywrightCloudVisualRegression`:
 
 ```javascript
 const cloudVisuals = new PlaywrightCloudVisualRegression({
@@ -93,13 +93,13 @@ test('snapshot test', async ({ page }, testInfo) => {
 
 Both will support all options supported by native `toHaveScreenshot` matcher provided by playwright.
 
-## Configuting mather via fixtures:
+## Configuting matcher via fixtures:
 
 The easiest way to configure the matchers is by using playwright test fixtures
 
 ### extended-test.ts
 
-```javscript
+```javascript
 import { test as BaseTest, expect } from '@playwright/test';
 import { PlaywrightCloudVisualRegression } from 'playwright-cloud-visuals';
 
@@ -108,11 +108,14 @@ const cloudVisuals = new PlaywrightCloudVisualRegression({
   remotePathDelimiter: '__screenshots__',
 });
 
-const test = BaseTest.extend<{ visualMatcher: VisualMatcher }>({
-  visualMatcher: async ({ page }, use, testInfo) => {
-    await use(cloudVisuals.createMatcher(page, testInfo));
-  },
-});
+const test =
+  BaseTest.extend <
+  { visualMatcher: VisualMatcher } >
+  {
+    visualMatcher: async ({ page }, use, testInfo) => {
+      await use(cloudVisuals.createMatcher(page, testInfo));
+    },
+  };
 
 export default test;
 ```
@@ -136,6 +139,15 @@ test('snapshot test', async ({ page, visualMatcher }) => {
 
 - **Automatic Screenshot Upload**: Missing screenshots are automatically pushed to the remote server based on test failures. You dont need to save the screenshots to the version control.
 - **Screenshot Update**: Users can individually update screenshots when the UI changes.
+
+```javascript
+await visualMatcher.assertPage({
+  update: true,
+});
+```
+
+This will replace the existing image in remote server with the latest screenshot taken during test execution
+
 - **Flexible Validation**: Methods for validating visual regression for both pages and individual web elements:
 
   - `await visualMatcher.assertElement(locator);`
