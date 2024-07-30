@@ -1,25 +1,22 @@
-import { test, expect } from "@playwright/test";
-import { PlaywrighCloudVisualRegression } from "../../src/index";
+import { test } from "@playwright/test";
+import { PlaywrighCloudVisualRegression, VisualExpect } from "../../src/index";
 
-test("has title", async ({ page }, testInfo) => {
+const extendedTest = test.extend<{
+  visualExpect: VisualExpect;
+}>({
+  visualExpect: async ({ page }, use, testInfo) => {
+    const regression = new PlaywrighCloudVisualRegression({
+      screenShotsBasePath: "__screenshots__",
+    });
+    await use(regression.createMatcher(page, testInfo));
+  },
+});
+
+extendedTest("has title", async ({ page, visualExpect }) => {
   test.setTimeout(0);
-  const regression = new PlaywrighCloudVisualRegression({
-    screenShotsBasePath: "__screenshots__",
-  });
-  const visualAssert = regression.createMatcher(page, testInfo, expect);
-  await visualAssert.toHaveScreenShot();
-  // try {
-  //   // Expect a title "to contain" a substring.
-  // await expect(page).toHaveScreenshot();
-  //   await expect(page).toHaveScreenshot();
-  // } catch (err) {
-  //   const oldAttachments = testInfo.attachments.map((a) => {
-  //     a.path = a.path
-  //       ? `data:image/png;base64,${fs.readFileSync(a.path, "base64")}`
-  //       : a.path;
-  //     return a;
-  //   });
-  //   testInfo.attachments.push(...JSON.parse(JSON.stringify(oldAttachments)));
-  //   console.log(testInfo);
-  // }
+  await page.goto("https://www.google.com/search?q=demo2");
+  const search = page.locator("[jsname='RNNXgb']");
+
+  await visualExpect.soft.assertElement(search, ["element", "search.png"]);
+  await visualExpect.soft.assertPage(["page", "full-page.png"]);
 });
