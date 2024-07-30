@@ -8,7 +8,7 @@ import { PlayShotOptions, ScreenshotAssertionOption } from './types';
 
 /*
  * Sample error message
- * Error: A snapshot doesn't exist at /Users/sudharsanselvaraj/Documents/git/oss/plawright-cloud-visuals/e2e/tests/__screenshots__/1800x992 darwin chromium/example.spec.ts/element/search.png, writing actual
+ * Error: A snapshot doesn't exist at /Users/username//e2e/tests/__screenshots__/1800x992 darwin chromium/example.spec.ts/element/search.png, writing actual
  */
 const IMAGE_PATH_REGEX = /at\s(.*\.(png|jpg|jpeg|gif|bmp|svg))/;
 
