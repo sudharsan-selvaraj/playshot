@@ -178,6 +178,7 @@ export class PlayShotMatcher {
           : a.path;
         return a;
       });
+      // attach base64 encoded image to the html report
       this.testInfo.attachments.push(
         ...JSON.parse(JSON.stringify(oldAttachments)),
       );
