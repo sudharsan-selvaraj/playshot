@@ -1,13 +1,19 @@
 import {
   GetObjectCommand,
+  ListBucketsCommand,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
 import { RemoteFileNotFoundException } from "../errors";
+import fs from "fs";
 
 type AmazonS3AdapterOptions = {
   bucket: string;
 };
+
+function convertToUnixPath(filePath: string) {
+  return filePath.replace(/\\/g, "/");
+}
 
 export class AmazonS3Adapter implements StorageAdapter {
   constructor(
@@ -15,8 +21,17 @@ export class AmazonS3Adapter implements StorageAdapter {
     private readonly options: AmazonS3AdapterOptions
   ) {}
 
+  async verifyConnection() {
+    try {
+      await this.s3Client.send(new ListBucketsCommand());
+      return true;
+    } catch (err) {
+      throw new Error(`Unable to connect to S3 service ${err}`);
+    }
+  }
+
   private getImageKey(filepathOnDisk: string, basePath: string) {
-    return filepathOnDisk.split(basePath)[1];
+    return convertToUnixPath(filepathOnDisk).split(basePath)[1];
   }
 
   async fetchScreenShot(
@@ -38,10 +53,10 @@ export class AmazonS3Adapter implements StorageAdapter {
   }
 
   async saveScreenShot(
-    base64String: string,
     filepathOnDisk: string,
     basePath: string
   ): Promise<void> {
+    const base64String = fs.readFileSync(filepathOnDisk, "base64");
     const body = Buffer.from(base64String, "base64");
     const key = this.getImageKey(filepathOnDisk, basePath);
     try {

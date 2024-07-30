@@ -1,8 +1,5 @@
 interface StorageAdapter {
+  verifyConnection(): Promise<boolean>;
   fetchScreenShot(filepathOnDisk: string, basePath: string): Promise<string>;
-  saveScreenShot(
-    base64String: string,
-    filepathOnDisk: string,
-    basePath: string
-  ): Promise<void>;
+  saveScreenShot(filepathOnDisk: string, basePath: string): Promise<void>;
 }

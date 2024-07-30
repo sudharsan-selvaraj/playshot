@@ -6,13 +6,13 @@ import type {
 } from "@playwright/test";
 import { expect } from "@playwright/test";
 import _ from "lodash";
-import { SnapshotHelper } from "./SanpshotHelper";
+import { SnapshotHelper } from "./snapshot-helper";
 import fs from "fs";
 import path from "path";
 import { RemoteFileNotFoundException } from "./errors";
 
 type CloudVisualRegressionOptions = {
-  adapter?: StorageAdapter;
+  adapter: StorageAdapter;
   screenShotsBasePath: string;
 };
 
@@ -143,8 +143,10 @@ class VisualExpect {
           helper.expectedPath,
           this.matchOption.screenShotsBasePath
         );
-        fs.mkdirSync(path.dirname(helper.expectedPath), { recursive: true });
-        fs.writeFileSync(helper.expectedPath, base64, "base64");
+        if (base64) {
+          fs.mkdirSync(path.dirname(helper.expectedPath), { recursive: true });
+          fs.writeFileSync(helper.expectedPath, base64, "base64");
+        }
       } catch (err) {
         if (err instanceof RemoteFileNotFoundException) {
           console.log(err.message);
@@ -171,11 +173,7 @@ class VisualExpect {
 
     await Promise.all(
       filesToUpload.map((f) =>
-        adapter.saveScreenShot(
-          fs.readFileSync(f, { encoding: "base64" }),
-          f,
-          this.matchOption.screenShotsBasePath
-        )
+        adapter.saveScreenShot(f, this.matchOption.screenShotsBasePath)
       )
     );
   }
@@ -183,6 +181,10 @@ class VisualExpect {
 
 class PlaywrighCloudVisualRegression {
   constructor(private readonly options: CloudVisualRegressionOptions) {}
+
+  async verifyConnection() {
+    return this.options.adapter.verifyConnection();
+  }
 
   createMatcher(page: Page, testInfo: TestInfo) {
     return new VisualExpect(page, testInfo, this.options);

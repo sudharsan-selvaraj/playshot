@@ -12,6 +12,7 @@
   "devDependencies": {
     "@types/lodash": "^4.17.7",
     "@types/node": "^20.14.12",
+    "@types/ssh2-sftp-client": "^9.0.3",
     "typescript": "^5.5.4"
   },
   "dependencies": {
@@ -19,6 +20,7 @@
     "@aws-sdk/credential-providers": "^3.620.1",
     "@playwright/test": "^1.45.3",
     "lodash": "^4.17.21",
-    "playwright-core": "^1.45.3"
+    "playwright-core": "^1.45.3",
+    "ssh2-sftp-client": "^10.0.3"
   }
 }
