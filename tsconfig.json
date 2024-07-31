@@ -3,6 +3,9 @@
     "outDir": "./dist" /* Redirect output structure to the directory. */,
     "rootDirs": ["src/"],
     "esModuleInterop": true,
+    "declaration": true,
+    "declarationMap": true,
+
   },
-  "exclude": ["e2e"]
+  "exclude": ["e2e", "dist"]
 }
