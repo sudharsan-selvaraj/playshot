@@ -2,6 +2,7 @@
   "compilerOptions": {
     "outDir": "./dist" /* Redirect output structure to the directory. */,
     "rootDirs": ["src/"],
-    "esModuleInterop": true
-  }
+    "esModuleInterop": true,
+  },
+  "exclude": ["e2e"]
 }
