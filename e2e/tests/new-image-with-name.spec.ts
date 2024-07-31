@@ -4,7 +4,7 @@ import { getTestFileName, getFilesFromBucket } from '../utils';
 import fs from 'fs';
 import path from 'path';
 
-test('test new image is uploaded to s3 if not present with default name', async ({
+test('test new image is Uploaded to s3 if not present with Default name', async ({
   page,
   playShot,
 }, testInfo) => {

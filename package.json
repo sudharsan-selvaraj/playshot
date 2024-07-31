@@ -1,6 +1,6 @@
 {
   "name": "playshot",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Magic potion for playwright to support visual regression with cloud storage",
   "main": "dist/index.js",
   "scripts": {

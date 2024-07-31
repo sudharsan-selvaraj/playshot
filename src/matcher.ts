@@ -5,12 +5,14 @@ import fs from 'fs';
 import path from 'path';
 import { RemoteFileNotFoundException } from './errors';
 import { PlayShotOptions, ScreenshotAssertionOption } from './types';
+import { calculateSha1 } from 'playwright-core/lib/utils';
 
 /*
  * Sample error message
  * Error: A snapshot doesn't exist at /Users/username//e2e/tests/__screenshots__/1800x992 darwin chromium/example.spec.ts/element/search.png, writing actual
  */
 const IMAGE_PATH_REGEX = /at\s(.*\.(png|jpg|jpeg|gif|bmp|svg))/;
+const fileUploadTracker: Record<string, string[]> = {};
 
 export class PlayShotMatcher {
   private softExpect: PlayShotMatcher;
@@ -120,6 +122,8 @@ export class PlayShotMatcher {
     const { adapter } = this.matchOption;
     const helper = new SnapshotHelper(this.testInfo, 'png', name);
     const expectMethod = this.isSoftAssert ? this.expect.soft : this.expect;
+    fileUploadTracker[this.testInfo.testId] =
+      fileUploadTracker[this.testInfo.testId] ?? [];
 
     if (
       helper.expectedPath &&
@@ -159,9 +163,18 @@ export class PlayShotMatcher {
       .map((e) => e.message?.toLocaleLowerCase())
       .filter((message) => message.includes("snapshot doesn't exist"))
       .map((message) => message.match(IMAGE_PATH_REGEX)[1])
-      .filter((f) => f && fs.existsSync(f));
+      .filter(
+        (f) =>
+          f &&
+          fs.existsSync(f) &&
+          !fileUploadTracker[this.testInfo.testId].includes(calculateSha1(f)),
+      );
 
-    filesToUpload.forEach((f) => this.imageList.add(f));
+    filesToUpload.forEach((f) => {
+      fileUploadTracker[this.testInfo.testId].push(calculateSha1(f));
+      this.imageList.add(f);
+      console.log(`Uploading ${f}`);
+    });
 
     await Promise.all(
       filesToUpload.map((f) =>
