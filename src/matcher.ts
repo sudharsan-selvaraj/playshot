@@ -64,7 +64,7 @@ export class PlayShotMatcher {
 
   async assertPage(): Promise<void>;
   async assertPage(
-    name: string | string[],
+    name: string | string[] | ScreenshotAssertionOption,
     options?: ScreenshotAssertionOption,
   ): Promise<void>;
   async assertPage(
@@ -72,7 +72,7 @@ export class PlayShotMatcher {
     options: ScreenshotAssertionOption,
   ): Promise<void>;
   async assertPage(
-    nameOrOptions?: string | string[],
+    nameOrOptions?: string | string[] | ScreenshotAssertionOption,
     options?: ScreenshotAssertionOption,
   ): Promise<void> {
     const { name, options: opts } = this.getAsserionOptions(
