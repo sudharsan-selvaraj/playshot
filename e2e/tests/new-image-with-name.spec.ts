@@ -13,7 +13,7 @@ test('test new image is Uploaded to s3 if not present with default name', async 
   await page.goto('https://the-internet.herokuapp.com/challenging_dom');
   await page.waitForSelector('table');
 
-  let files = await getFilesFromBucket(fileName);
+  let files = (await getFilesFromBucket(fileName)) as any;
 
   expect(files.Contents).toBeFalsy();
 
@@ -38,8 +38,8 @@ test('test new image is Uploaded to s3 if not present with default name', async 
     'canvas.png',
   ]);
   files = await getFilesFromBucket(fileName);
-  expect(files.Contents.length).toEqual(2);
-  expect(files.Contents.map((c) => c.Key)).toContain(
+  expect(files?.Contents?.length).toEqual(2);
+  expect(files?.Contents?.map((c) => c.Key)).toContain(
     `${fileName}/sub-folder/canvas.png`,
   );
   expect(
