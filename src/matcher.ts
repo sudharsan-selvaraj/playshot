@@ -12,6 +12,7 @@ import { calculateSha1 } from 'playwright-core/lib/utils';
  * Error: A snapshot doesn't exist at /Users/username//e2e/tests/__screenshots__/1800x992 darwin chromium/example.spec.ts/element/search.png, writing actual
  */
 const IMAGE_PATH_REGEX = /at\s(.*\.(png|jpg|jpeg|gif|bmp|svg))/;
+const IMAGE_COMPARION_FAILED_FILES_REGEX = /-(diff|actual|expected)\.*/g;
 const fileUploadTracker: Record<string, string[]> = {};
 
 export class PlayShotMatcher {
@@ -185,11 +186,8 @@ export class PlayShotMatcher {
   private async attachFailureScreenshotToReport() {
     if (this.matchOption.attachImagesToReport) {
       const oldAttachments = this.testInfo.attachments
-        .filter(
-          (a) =>
-            a.name.includes('actual') ||
-            a.name.includes('expected') ||
-            a.name.includes('diff'),
+        .filter((a) =>
+          new RegExp(IMAGE_COMPARION_FAILED_FILES_REGEX).test(a.name),
         )
         .map((a) => {
           a.path = a.path
