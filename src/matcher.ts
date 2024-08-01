@@ -160,8 +160,8 @@ export class PlayShotMatcher {
     }
 
     const filesToUpload = this.testInfo.errors
-      .map((e) => e.message?.toLocaleLowerCase())
-      .filter((message) => message.includes("snapshot doesn't exist"))
+      .map((e) => e.message || '')
+      .filter((message) => message.includes("snapshot doesn't exist at"))
       .map((message) => message.match(IMAGE_PATH_REGEX)[1])
       .filter(
         (f) =>
@@ -173,7 +173,6 @@ export class PlayShotMatcher {
     filesToUpload.forEach((f) => {
       fileUploadTracker[this.testInfo.testId].push(calculateSha1(f));
       this.imageList.add(f);
-      console.log(`Uploading ${f}`);
     });
 
     await Promise.all(
@@ -185,12 +184,19 @@ export class PlayShotMatcher {
 
   private async attachFailureScreenshotToReport() {
     if (this.matchOption.attachImagesToReport) {
-      const oldAttachments = this.testInfo.attachments.map((a) => {
-        a.path = a.path
-          ? `data:image/png;base64,${fs.readFileSync(a.path, 'base64')}`
-          : a.path;
-        return a;
-      });
+      const oldAttachments = this.testInfo.attachments
+        .filter(
+          (a) =>
+            a.name.includes('actual') ||
+            a.name.includes('expected') ||
+            a.name.includes('diff'),
+        )
+        .map((a) => {
+          a.path = a.path
+            ? `data:image/png;base64,${fs.readFileSync(a.path, 'base64')}`
+            : a.path;
+          return a;
+        });
       // attach base64 encoded image to the html report
       this.testInfo.attachments.push(
         ...JSON.parse(JSON.stringify(oldAttachments)),

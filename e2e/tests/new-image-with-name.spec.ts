@@ -4,7 +4,7 @@ import { getTestFileName, getFilesFromBucket } from '../utils';
 import fs from 'fs';
 import path from 'path';
 
-test('test new image is Uploaded to s3 if not present with Default name', async ({
+test('test new image is Uploaded to s3 if not present with default name', async ({
   page,
   playShot,
 }, testInfo) => {
@@ -30,7 +30,7 @@ test('test new image is Uploaded to s3 if not present with Default name', async 
 
   expect(
     fs.existsSync(
-      path.join(SCREEN_SHOT_DIRECTORY, fileName, 'sub-folder', 'canvas.png'),
+      path.join(SCREEN_SHOT_DIRECTORY, fileName, 'Sub-Folder', 'canvas.png'),
     ),
   ).toEqual(false);
   await playShot.soft.assertElement(page.locator('#canvas'), [
@@ -44,7 +44,7 @@ test('test new image is Uploaded to s3 if not present with Default name', async 
   );
   expect(
     fs.existsSync(
-      path.join(SCREEN_SHOT_DIRECTORY, fileName, 'sub-folder', 'canvas.png'),
+      path.join(SCREEN_SHOT_DIRECTORY, fileName, 'Sub-Folder', 'canvas.png'),
     ),
   ).toEqual(true);
 
