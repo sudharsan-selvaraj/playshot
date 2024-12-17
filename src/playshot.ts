@@ -1,5 +1,4 @@
 import type { Page, TestInfo } from '@playwright/test';
-import _ from 'lodash';
 import { PlayShotOptions } from './types';
 import { PlayShotMatcher } from './matcher';
 import { expect } from '@playwright/test';
